@@ -1,5 +1,5 @@
 
 public class CapitalInfo {
 
-	int [] latlng;
+	double [] latlng;
 }

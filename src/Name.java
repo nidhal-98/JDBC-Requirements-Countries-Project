@@ -1,9 +1,10 @@
+import java.util.HashMap;
 
 public class Name {
 	
 	String common;
 	String official;
 	
-	nativeName nativeName = new nativeName();
+	HashMap<String, nativeName> nativeName;
 
 }

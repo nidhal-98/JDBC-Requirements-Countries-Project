@@ -1,3 +1,4 @@
+import java.util.HashMap;
 
 public class Countries {
 	Name name = new Name();
@@ -6,22 +7,22 @@ public class Countries {
 	int ccn3;
 	String cca3;
 	String cioc;
-	String independent;
+	boolean independent;
 	String status;
-	String unMember;
-	Currencies currencies = new Currencies();
+	boolean unMember;
+	HashMap<String, Currencies> currencies;
 	Idd idd = new Idd();
 	String [] capital;
 	String [] altSpellings;
 	String region;
 	String subregion;
-	Languages languages = new Languages();
-	Translations translations = new Translations();
-	int [] latlng;
-	String landlocked;
-	String borders;
+	HashMap<String, String> languages;
+	HashMap<String, Translations> translations;
+	double [] latlng;
+	boolean landlocked;
+	String[] borders;
 	double area;
-	Demonyms demonyms = new Demonyms();
+	HashMap<String, Demonyms> demonyms;
 	String flag;
 	Map maps = new Map(); 
 	long population;

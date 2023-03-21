@@ -1,7 +1,6 @@
 
 public class Idd {
-	
-	String root;
-	String [] suffixes;
 
+	String root;
+	String[] suffixes;
 }

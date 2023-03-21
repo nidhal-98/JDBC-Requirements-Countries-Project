@@ -5,6 +5,6 @@ public class Name {
 	String common;
 	String official;
 	
-	HashMap<String, nativeName> nativeName;
+	HashMap<String, NativeName> nativeName;
 
 }

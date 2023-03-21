@@ -1,5 +1,5 @@
 
-public class nativeName {
+public class NativeName {
 
 	String official;
 	String common;

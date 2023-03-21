@@ -76,8 +76,8 @@ public class API {
 						String key = entry.getKey();
 						Currencies value = entry.getValue();
 						System.out.println("  *" + key + "*");
-						System.out.println("    " + "Official: " + value.name);
-						System.out.println("    " + "Common:   " + value.symbol);
+						System.out.println("    " + "Name: " + value.name);
+						System.out.println("    " + "Symbol:   " + value.symbol);
 
 					}
 				}
@@ -135,8 +135,16 @@ public class API {
 				}
 				
 				System.out.println("  Landlocked: " + newCountry.landlocked);
-				System.out.println("  Area: " + newCountry.area);
 				
+				if (newCountry.borders != null) {
+					System.out.println("  Borders: ");
+					for (String borders : newCountry.borders) {
+						System.out.println("    " + borders);
+					}
+				}
+
+				System.out.println("  Area: " + newCountry.area);
+
 				System.out.println("  Demonyms:");
 				if (newCountry.demonyms != null && !newCountry.demonyms.isEmpty()) {
 					for (Entry<String, Demonyms> entry : newCountry.demonyms.entrySet()) {
@@ -156,7 +164,7 @@ public class API {
 
 				System.out.println("  Population: " + newCountry.population);
 				
-				System.out.println("  Fifa: " + newCountry.fifa);
+				System.out.println("  fifa: " + newCountry.fifa);
 				
 				if (newCountry.car.signs != null) {
 					System.out.println("  Car: ");
@@ -191,6 +199,20 @@ public class API {
 				System.out.println("    png:   " + newCountry.coatOfArms.png);
 				System.out.println("    svg:   " + newCountry.coatOfArms.svg);				
 				
+				System.out.println("  StartOfWeek: " + newCountry.startOfWeek);
+				
+				System.out.println("  CapitalInfo: " + newCountry.startOfWeek);
+				if (newCountry.capitalInfo.latlng != null) {
+					System.out.println("   Latlng: ");
+					for (double latlng : newCountry.capitalInfo.latlng) {
+						System.out.println("     " + latlng);
+					}
+				}
+				
+				System.out.println("  PostalCode: ");
+				System.out.println("    Format:   " + newCountry.postalCode.format);
+				System.out.println("    Regex:   " + newCountry.postalCode.regex);
+
 			}
 
 		} catch (Exception e) {

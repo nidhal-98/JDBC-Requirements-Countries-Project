@@ -9,8 +9,51 @@ import com.google.gson.Gson;
 
 public class API {
 
-	static ArrayList<String> countrySet = new ArrayList<String>();
+	static ArrayList<String> countriesList = new ArrayList<String>();
+	static ArrayList <Countries> countries = new ArrayList<Countries>();
 
+	public static void APICountriesName() {
+        String apiUrl = "https://restcountries.com/v3.1/all";
+        try {
+        	countriesList.clear();
+            URL url = new URL(apiUrl);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Accept", "application/json");
+            
+            if (conn.getResponseCode() != 200) {
+                throw new RuntimeException("HTTP error code : " + conn.getResponseCode());
+            }
+            
+            BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+            String output;
+            StringBuilder json = new StringBuilder();
+            
+            while ((output = br.readLine()) != null) {
+                json.append(output);
+            }
+            
+            conn.disconnect();
+            
+            Gson gson = new Gson();
+			Countries countriesArr[] = gson.fromJson(json.toString(), Countries[].class);
+            
+            // Use myObj for further processing
+
+            for(int i=0; i<countriesArr.length; i++) {
+            	Countries newCountry = countriesArr[i];
+                String countryName = newCountry.name.official;
+                countryName = countryName.replaceAll(" ", "+");
+                if (!countriesList.contains(countryName) && !countryName.equals("Israel")) {
+                	countriesList.add(countryName);
+                }
+            }
+			//JDBC.countriesTable();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+	
 	public static void APICountries() {
 		String apiUrl = "https://restcountries.com/v3.1/all";
 		try {
@@ -212,7 +255,9 @@ public class API {
 				System.out.println("  PostalCode: ");
 				System.out.println("    Format:   " + newCountry.postalCode.format);
 				System.out.println("    Regex:   " + newCountry.postalCode.regex);
-
+				
+				countries.add(newCountry);
+				JDBC.countriesTable();
 			}
 
 		} catch (Exception e) {

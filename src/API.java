@@ -257,8 +257,9 @@ public class API {
 				System.out.println("    Regex:   " + newCountry.postalCode.regex);
 				
 				countries.add(newCountry);
-				JDBC.countriesTable();
+				
 			}
+			JDBC.countriesTable();
 
 		} catch (Exception e) {
 			e.printStackTrace();

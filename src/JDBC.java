@@ -108,72 +108,111 @@ public class JDBC {
 					+ "        independent TINYINT,\r\n"
 					+ "        status VARCHAR(255),\r\n"
 					+ "        un_member TINYINT,\r\n"
-					+ "        currencies_name VARCHAR(255),\r\n"
-					+ "        currencies_symbol VARCHAR(10),\r\n"
 					+ "        idd_root VARCHAR(10),\r\n"
 					+ "        idd_suffixes VARCHAR(255),\r\n"
 					+ "        capital VARCHAR(255),\r\n"
 					+ "        alt_spellings VARCHAR(255),\r\n"
 					+ "        region VARCHAR(255),\r\n"
-					+ "        subregion VARCHAR(255),\r\n"
-					+ "        languages_key VARCHAR(10),\r\n"
-					+ "        languages_value VARCHAR(255)\r\n"
+					+ "        subregion VARCHAR(255)\r\n"
 					+ "    );\r\n"
 					+ "END;\r\n"
-					+ "INSERT INTO Countries (name_common, name_official, tld, cca2, ccn3, cca3, cioc, independent, status, un_member, currencies_name, currencies_symbol, idd_root, idd_suffixes, capital, alt_spellings, region, subregion, languages_key, languages_value)\r\n"
-					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);\r\n"
-					+ "";
+					+ "INSERT INTO Countries (name_common, name_official, tld, cca2, ccn3, cca3, cioc, independent, status, un_member, idd_root, idd_suffixes, capital, alt_spellings, region, subregion)\r\n"
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);\r\n";
+					
+					String insertLangSql =  "IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Languages')\r\n"
+					+ "BEGIN\r\n"
+					+ "    CREATE TABLE Languages (\r\n"
+					+ "        country_Name VARCHAR(255),\r\n"
+					+ "        Language_Key VARCHAR(255),\r\n"
+					+ "        Language_Value VARCHAR(255)\r\n"
+					+ "    );\r\n"
+					+ "END;\r\n"
+					+ "INSERT INTO Languages (country_Name, Language_Key, Language_Value)\r\n"
+	        		+ "VALUES (?, ?, ?);\r\n";
+					
+					String insertCurrSql = "IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Currencies')\r\n"
+					+ "BEGIN\r\n"
+					+ "    CREATE TABLE Currencies (\r\n"
+					+ "        country_Name VARCHAR(255),\r\n"
+					+ "        Currencies_Key VARCHAR(255),\r\n"
+					+ "        Name VARCHAR(255),\r\n"
+					+ "        Symbol VARCHAR(255)\r\n"
+					+ "    );\r\n"
+					+ "END;"
+					+ "INSERT INTO Currencies (country_Name, Currencies_Key, Name, Symbol)\r\n"
+	        		+ "VALUES (?, ?, ?, ?);\r\n";
+
+			
+
 
 			PreparedStatement statement = con.prepareStatement(sql);
-			statement.setString(1, API.countries.get(0).name.common);
-			statement.setString(2, API.countries.get(0).name.official);
-			statement.setString(3, API.countries.get(0).tld[0]);
-			statement.setString(4, API.countries.get(0).cca2);
-			statement.setInt(5, API.countries.get(0).ccn3);
-			statement.setString(6, API.countries.get(0).cca3);
-			statement.setString(7, API.countries.get(0).cioc);
-			statement.setBoolean(8, API.countries.get(0).independent);
-			statement.setString(9, API.countries.get(0).status);
-			statement.setBoolean(10, API.countries.get(0).unMember);
+	        PreparedStatement langStatement = con.prepareStatement(insertLangSql);
+	        PreparedStatement currenciesStatement = con.prepareStatement(insertCurrSql);
+
+
+			
+			statement.setString(1, API.countries.get(API.countries.size()-1).name.common);
+			statement.setString(2, API.countries.get(API.countries.size()-1).name.official);
+			
+
+			
+			statement.setString(3, API.countries.get(API.countries.size()-1).tld[0]);
+			statement.setString(4, API.countries.get(API.countries.size()-1).cca2);
+			statement.setInt(5, API.countries.get(API.countries.size()-1).ccn3);
+			statement.setString(6, API.countries.get(API.countries.size()-1).cca3);
+			statement.setString(7, API.countries.get(API.countries.size()-1).cioc);
+			statement.setBoolean(8, API.countries.get(API.countries.size()-1).independent);
+			statement.setString(9, API.countries.get(API.countries.size()-1).status);
+			statement.setBoolean(10, API.countries.get(API.countries.size()-1).unMember);
 			
 			String key = null;
 			String name = null;
 			String symbol = null;
-			if (API.countries.get(0).currencies != null && !API.countries.get(0).currencies.isEmpty()) {
-				for (Entry<String, Currencies> entry : API.countries.get(0).currencies.entrySet()) {
+			
+			if (API.countries.get(API.countries.size()-1).currencies != null && !API.countries.get(API.countries.size()-1).currencies.isEmpty()) {
+				for (Entry<String, Currencies> entry : API.countries.get(API.countries.size()-1).currencies.entrySet()) {
 					key = entry.getKey();
 					Currencies value = entry.getValue();
 					name = value.name;
 					symbol = value.symbol;
+			        currenciesStatement.setString(1, API.countries.get(API.countries.size()-1).name.common);
+			        currenciesStatement.setString(2, key);
+			        currenciesStatement.setString(3, name);
+			        currenciesStatement.setString(4, symbol);
+			        currenciesStatement.executeUpdate();
+				}
+				
+			}
+			
 
-				}
+			statement.setString(11, API.countries.get(API.countries.size()-1).idd.root);
+			statement.setString(12, API.countries.get(API.countries.size()-1).idd.suffixes[0]);
+			statement.setString(13, API.countries.get(API.countries.size()-1).capital[0]);
+			statement.setString(14, API.countries.get(API.countries.size()-1).altSpellings[0]);
+			statement.setString(15, API.countries.get(API.countries.size()-1).region);
+			statement.setString(16, API.countries.get(API.countries.size()-1).subregion);
+			
+
+			if (API.countries.get(API.countries.size()-1).languages != null && !API.countries.get(API.countries.size()-1).languages.isEmpty()) {
+			    for (Entry<String, String> entry : API.countries.get(API.countries.size()-1).languages.entrySet()) {
+			        String langKey = entry.getKey();
+			        String langValue = entry.getValue();
+			        langStatement.setString(1, API.countries.get(API.countries.size()-1).name.common);
+			        langStatement.setString(2, langKey);
+			        langStatement.setString(3, langValue);
+			        langStatement.executeUpdate();
+			    }
 			}
 			
-			statement.setString(11, name);
-			statement.setString(12, symbol);
-			statement.setString(13, API.countries.get(0).idd.root);
-			statement.setString(14, API.countries.get(0).idd.suffixes[0]);
-			statement.setString(15, API.countries.get(0).capital[0]);
-			statement.setString(16, API.countries.get(0).altSpellings[0]);
-			statement.setString(17, API.countries.get(0).region);
-			statement.setString(18, API.countries.get(0).subregion);
 			
-			String firstKey = null;
-			String firstValue = null;
-			if (API.countries.get(0).languages != null && !API.countries.get(0).languages.isEmpty()) {
-				for (Entry<String, String> entry : API.countries.get(0).languages.entrySet()) {
-					firstKey = entry.getKey();
-					firstValue = entry.getValue();
-				}
-			}
-			statement.setString(19, firstKey);
-			statement.setString(20, firstValue);
+
 			
 			statement.executeUpdate();
 
-
 			// Close the PreparedStatement object
 			statement.close();
+			currenciesStatement.close();
+			langStatement.close();
 
 			con.close();
 		} catch (Exception ex) {

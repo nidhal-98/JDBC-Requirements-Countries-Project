@@ -141,6 +141,18 @@ public class JDBC {
 					+ "END;"
 					+ "INSERT INTO Currencies (country_Name, Currencies_Key, Name, Symbol)\r\n"
 	        		+ "VALUES (?, ?, ?, ?);\r\n";
+					
+					String insertTranSql = "IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Translations')\r\n"
+					+ "BEGIN\r\n"
+					+ "    CREATE TABLE Translations (\r\n"
+					+ "        country_Name VARCHAR(255),\r\n"
+					+ "        Translations_Key VARCHAR(255),\r\n"
+					+ "        Official VARCHAR(255),\r\n"
+					+ "        Common VARCHAR(255)\r\n"
+					+ "    );\r\n"
+					+ "END;"
+					+ "INSERT INTO Currencies (country_Name, Translations_Key, Official, Common)\r\n"
+	        		+ "VALUES (?, ?, ?, ?);\r\n";
 
 			
 
@@ -148,6 +160,8 @@ public class JDBC {
 			PreparedStatement statement = con.prepareStatement(sql);
 	        PreparedStatement langStatement = con.prepareStatement(insertLangSql);
 	        PreparedStatement currenciesStatement = con.prepareStatement(insertCurrSql);
+	        PreparedStatement TranslationsStatement = con.prepareStatement(insertTranSql);
+
 
 
 			
@@ -224,6 +238,24 @@ public class JDBC {
 			    }
 			}
 			
+			String transKey = null;
+			String transOfficial = null;
+			String transCommon = null;
+			
+			if (API.countries.get(API.countries.size()-1).translations != null && !API.countries.get(API.countries.size()-1).translations.isEmpty()) {
+				for (Entry<String, Translations> entry : API.countries.get(API.countries.size()-1).translations.entrySet()) {
+					transKey = entry.getKey();
+					Translations value = entry.getValue();
+					transOfficial = value.official;
+					transCommon = value.common;
+			        currenciesStatement.setString(1, API.countries.get(API.countries.size()-1).name.common);
+			        currenciesStatement.setString(2, transKey);
+			        currenciesStatement.setString(3, transOfficial);
+			        currenciesStatement.setString(4, transCommon);
+			        currenciesStatement.executeUpdate();
+				}
+				
+			}
 			
 
 			

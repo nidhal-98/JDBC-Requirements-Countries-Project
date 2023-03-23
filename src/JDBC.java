@@ -151,7 +151,7 @@ public class JDBC {
 					+ "        Common VARCHAR(255)\r\n"
 					+ "    );\r\n"
 					+ "END;"
-					+ "INSERT INTO Currencies (country_Name, Translations_Key, Official, Common)\r\n"
+					+ "INSERT INTO Translations (country_Name, Translations_Key, Official, Common)\r\n"
 	        		+ "VALUES (?, ?, ?, ?);\r\n";
 
 			
@@ -248,11 +248,11 @@ public class JDBC {
 					Translations value = entry.getValue();
 					transOfficial = value.official;
 					transCommon = value.common;
-			        currenciesStatement.setString(1, API.countries.get(API.countries.size()-1).name.common);
-			        currenciesStatement.setString(2, transKey);
-			        currenciesStatement.setString(3, transOfficial);
-			        currenciesStatement.setString(4, transCommon);
-			        currenciesStatement.executeUpdate();
+					TranslationsStatement.setString(1, API.countries.get(API.countries.size()-1).name.common);
+					TranslationsStatement.setString(2, transKey);
+					TranslationsStatement.setString(3, transOfficial);
+					TranslationsStatement.setString(4, transCommon);
+					TranslationsStatement.executeUpdate();
 				}
 				
 			}

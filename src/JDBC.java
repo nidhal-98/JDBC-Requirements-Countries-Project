@@ -154,9 +154,12 @@ public class JDBC {
 			statement.setString(1, API.countries.get(API.countries.size()-1).name.common);
 			statement.setString(2, API.countries.get(API.countries.size()-1).name.official);
 			
-
+			String tldCombined = "";
+			for(int i =0; i<API.countries.get(API.countries.size()-1).tld.length; i++) {
+				tldCombined = tldCombined + " - " + API.countries.get(API.countries.size()-1).tld[i];
+			}
 			
-			statement.setString(3, API.countries.get(API.countries.size()-1).tld[0]);
+			statement.setString(3, tldCombined);
 			statement.setString(4, API.countries.get(API.countries.size()-1).cca2);
 			statement.setInt(5, API.countries.get(API.countries.size()-1).ccn3);
 			statement.setString(6, API.countries.get(API.countries.size()-1).cca3);
@@ -186,9 +189,26 @@ public class JDBC {
 			
 
 			statement.setString(11, API.countries.get(API.countries.size()-1).idd.root);
-			statement.setString(12, API.countries.get(API.countries.size()-1).idd.suffixes[0]);
-			statement.setString(13, API.countries.get(API.countries.size()-1).capital[0]);
-			statement.setString(14, API.countries.get(API.countries.size()-1).altSpellings[0]);
+			
+			
+			String suffixesCombined = "";
+			for(int i =0; i<API.countries.get(API.countries.size()-1).idd.suffixes.length; i++) {
+				suffixesCombined = suffixesCombined + " - " + API.countries.get(API.countries.size()-1).idd.suffixes[i];
+			}
+			statement.setString(12, suffixesCombined);
+			
+			String capitalCombined = "";
+			for(int i =0; i<API.countries.get(API.countries.size()-1).capital.length; i++) {
+				capitalCombined = capitalCombined + " - " + API.countries.get(API.countries.size()-1).capital[i];
+			}
+			statement.setString(13, capitalCombined);
+			
+			String altSpellingsCombined = "";
+			for(int i =0; i<API.countries.get(API.countries.size()-1).altSpellings.length; i++) {
+				altSpellingsCombined = altSpellingsCombined + " - " + API.countries.get(API.countries.size()-1).altSpellings[i];
+			}
+			statement.setString(14, altSpellingsCombined);
+			
 			statement.setString(15, API.countries.get(API.countries.size()-1).region);
 			statement.setString(16, API.countries.get(API.countries.size()-1).subregion);
 			

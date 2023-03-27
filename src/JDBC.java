@@ -98,33 +98,46 @@ public class JDBC {
 					+ "BEGIN\r\n"
 					+ "    CREATE TABLE Countries (\r\n"
 					+ "        id INT NOT NULL PRIMARY KEY IDENTITY,\r\n"
-					+ "        name_common VARCHAR(255),\r\n"
-					+ "        name_official VARCHAR(255),\r\n"
-					+ "        tld VARCHAR(255),\r\n"
-					+ "        cca2 VARCHAR(2),\r\n"
-					+ "        ccn3 VARCHAR(3),\r\n"
-					+ "        cca3 VARCHAR(3),\r\n"
-					+ "        cioc VARCHAR(3),\r\n"
+					+ "        name_common VARCHAR(MAX),\r\n"
+					+ "        name_official VARCHAR(MAX),\r\n"
+					+ "        tld VARCHAR(MAX),\r\n"
+					+ "        cca2 VARCHAR(MAX),\r\n"
+					+ "        ccn3 VARCHAR(MAX),\r\n"
+					+ "        cca3 VARCHAR(MAX),\r\n"
+					+ "        cioc VARCHAR(MAX),\r\n"
 					+ "        independent TINYINT,\r\n"
-					+ "        status VARCHAR(255),\r\n"
+					+ "        status VARCHAR(MAX),\r\n"
 					+ "        un_member TINYINT,\r\n"
-					+ "        idd_root VARCHAR(10),\r\n"
-					+ "        idd_suffixes VARCHAR(255),\r\n"
-					+ "        capital VARCHAR(255),\r\n"
-					+ "        alt_spellings VARCHAR(255),\r\n"
-					+ "        region VARCHAR(255),\r\n"
-					+ "        subregion VARCHAR(255)\r\n"
+					+ "        idd_root VARCHAR(MAX),\r\n"
+					+ "        idd_suffixes VARCHAR(MAX),\r\n"
+					+ "        capital VARCHAR(MAX),\r\n"
+					+ "        alt_spellings VARCHAR(MAX),\r\n"
+					+ "        region VARCHAR(MAX),\r\n"
+					+ "        subregion VARCHAR(MAX),\r\n"
+					+ "		   latlng VARCHAR(MAX),\r\n"
+					+ "		   landlocked TINYINT,\r\n"
+					+ "		   borders VARCHAR(MAX),\r\n"
+					+ "		   area VARCHAR(MAX),\r\n"
+					+ "		   flag VARCHAR(MAX),\r\n"
+					+ "		   maps VARCHAR(MAX),\r\n"
+					+ "		   population INT,\r\n"
+					+ "		   fifa VARCHAR(MAX),\r\n"
+					+ "		   car_Signs VARCHAR(MAX),\r\n"
+					+ "		   car_Side VARCHAR(MAX),\r\n"
+					+ "		   timezones VARCHAR(MAX),\r\n"
+					+ "		   continents VARCHAR(MAX)\r\n"
 					+ "    );\r\n"
 					+ "END;\r\n"
-					+ "INSERT INTO Countries (name_common, name_official, tld, cca2, ccn3, cca3, cioc, independent, status, un_member, idd_root, idd_suffixes, capital, alt_spellings, region, subregion)\r\n"
-					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);\r\n";
+					+ "INSERT INTO Countries (name_common, name_official, tld, cca2, ccn3, cca3, cioc, independent, status, un_member, idd_root, idd_suffixes, capital, alt_spellings, region, subregion, latlng, "
+					+ "landlocked, borders, area, flag, maps, population, fifa, car_Signs, car_Side, timezones, continents)\r\n"
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);\r\n";
 					
 					String insertLangSql =  "IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Languages')\r\n"
 					+ "BEGIN\r\n"
 					+ "    CREATE TABLE Languages (\r\n"
-					+ "        country_Name VARCHAR(255),\r\n"
-					+ "        Language_Key VARCHAR(255),\r\n"
-					+ "        Language_Value VARCHAR(255)\r\n"
+					+ "        country_Name VARCHAR(MAX),\r\n"
+					+ "        Language_Key VARCHAR(MAX),\r\n"
+					+ "        Language_Value VARCHAR(MAX)\r\n"
 					+ "    );\r\n"
 					+ "END;\r\n"
 					+ "INSERT INTO Languages (country_Name, Language_Key, Language_Value)\r\n"
@@ -133,10 +146,10 @@ public class JDBC {
 					String insertCurrSql = "IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Currencies')\r\n"
 					+ "BEGIN\r\n"
 					+ "    CREATE TABLE Currencies (\r\n"
-					+ "        country_Name VARCHAR(255),\r\n"
-					+ "        Currencies_Key VARCHAR(255),\r\n"
-					+ "        Name VARCHAR(255),\r\n"
-					+ "        Symbol VARCHAR(255)\r\n"
+					+ "        country_Name VARCHAR(MAX),\r\n"
+					+ "        Currencies_Key VARCHAR(MAX),\r\n"
+					+ "        Name VARCHAR(MAX),\r\n"
+					+ "        Symbol VARCHAR(MAX)\r\n"
 					+ "    );\r\n"
 					+ "END;"
 					+ "INSERT INTO Currencies (country_Name, Currencies_Key, Name, Symbol)\r\n"
@@ -145,14 +158,39 @@ public class JDBC {
 					String insertTranSql = "IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Translations')\r\n"
 					+ "BEGIN\r\n"
 					+ "    CREATE TABLE Translations (\r\n"
-					+ "        country_Name VARCHAR(255),\r\n"
-					+ "        Translations_Key VARCHAR(255),\r\n"
-					+ "        Official VARCHAR(255),\r\n"
-					+ "        Common VARCHAR(255)\r\n"
+					+ "        country_Name VARCHAR(MAX),\r\n"
+					+ "        Translations_Key VARCHAR(MAX),\r\n"
+					+ "        Official VARCHAR(MAX),\r\n"
+					+ "        Common VARCHAR(MAX)\r\n"
 					+ "    );\r\n"
 					+ "END;"
 					+ "INSERT INTO Translations (country_Name, Translations_Key, Official, Common)\r\n"
 	        		+ "VALUES (?, ?, ?, ?);\r\n";
+					
+					String insertDemonymsSql = "IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Demonyms')\r\n"
+					+ "BEGIN\r\n"
+					+ "    CREATE TABLE Demonyms (\r\n"
+					+ "        country_Name VARCHAR(MAX),\r\n"
+					+ "        Demonyms_Key VARCHAR(MAX),\r\n"
+					+ "        f VARCHAR(MAX),\r\n"
+					+ "        m VARCHAR(MAX)\r\n"
+					+ "    );\r\n"
+					+ "END;"
+					+ "INSERT INTO Demonyms (country_Name, Demonyms_Key, f, m)\r\n"
+	        		+ "VALUES (?, ?, ?, ?);\r\n";
+					
+					String insertFlafSql = "IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Flag')\r\n"
+					+ "BEGIN\r\n"
+					+ "    CREATE TABLE Flag (\r\n"
+					+ "        country_Name VARCHAR(MAX),\r\n"
+					+ "        png VARCHAR(MAX),\r\n"
+					+ "        svg VARCHAR(MAX),\r\n"
+					+ "        alt VARCHAR(MAX)\r\n"
+					+ "    );\r\n"
+					+ "END;"
+					+ "INSERT INTO Flag (country_Name, png, svg, alt)\r\n"
+	        		+ "VALUES (?, ?, ?, ?);\r\n";
+
 
 			
 
@@ -161,6 +199,9 @@ public class JDBC {
 	        PreparedStatement langStatement = con.prepareStatement(insertLangSql);
 	        PreparedStatement currenciesStatement = con.prepareStatement(insertCurrSql);
 	        PreparedStatement TranslationsStatement = con.prepareStatement(insertTranSql);
+	        PreparedStatement DemonymsStatement = con.prepareStatement(insertDemonymsSql);
+	        PreparedStatement FlagStatement = con.prepareStatement(insertFlafSql);
+
 
 
 
@@ -170,7 +211,8 @@ public class JDBC {
 			
 			String tldCombined = "";
 			for(int i =0; i<API.countries.get(API.countries.size()-1).tld.length; i++) {
-				tldCombined = tldCombined + " - " + API.countries.get(API.countries.size()-1).tld[i];
+				tldCombined = tldCombined  + "(" + API.countries.get(API.countries.size()-1).tld[i] + ") " + "/ ";
+
 			}
 			
 			statement.setString(3, tldCombined);
@@ -207,19 +249,21 @@ public class JDBC {
 			
 			String suffixesCombined = "";
 			for(int i =0; i<API.countries.get(API.countries.size()-1).idd.suffixes.length; i++) {
-				suffixesCombined = suffixesCombined + " - " + API.countries.get(API.countries.size()-1).idd.suffixes[i];
+				suffixesCombined = suffixesCombined  + "(" + API.countries.get(API.countries.size()-1).idd.suffixes[i] + ") " + "/ ";
+
 			}
 			statement.setString(12, suffixesCombined);
 			
 			String capitalCombined = "";
 			for(int i =0; i<API.countries.get(API.countries.size()-1).capital.length; i++) {
-				capitalCombined = capitalCombined + " - " + API.countries.get(API.countries.size()-1).capital[i];
+				capitalCombined = capitalCombined  + "(" + API.countries.get(API.countries.size()-1).capital[i] + ") " + "/ ";
+
 			}
 			statement.setString(13, capitalCombined);
 			
 			String altSpellingsCombined = "";
 			for(int i =0; i<API.countries.get(API.countries.size()-1).altSpellings.length; i++) {
-				altSpellingsCombined = altSpellingsCombined + " - " + API.countries.get(API.countries.size()-1).altSpellings[i];
+				altSpellingsCombined = altSpellingsCombined  + "(" + API.countries.get(API.countries.size()-1).altSpellings[i] + ") " + "/ ";
 			}
 			statement.setString(14, altSpellingsCombined);
 			
@@ -257,6 +301,77 @@ public class JDBC {
 				
 			}
 			
+			String latlngCombined = "";
+			for(int i =0; i<API.countries.get(API.countries.size()-1).latlng.length; i++) {
+				latlngCombined = latlngCombined  + "(" + API.countries.get(API.countries.size()-1).latlng[i] + ") " + "/ ";
+			}
+			statement.setString(17, latlngCombined);
+						
+			statement.setBoolean(18, API.countries.get(API.countries.size()-1).landlocked);
+			
+			String bordersCombined = "";
+			if (API.countries.get(API.countries.size()-1).borders != null) {
+				for(int i =0; i<API.countries.get(API.countries.size()-1).borders.length; i++) {
+					bordersCombined = bordersCombined  + "(" + API.countries.get(API.countries.size()-1).borders[i] + ") " + "/ ";
+				}
+			}
+			statement.setString(19, bordersCombined);
+			
+			statement.setDouble(20, API.countries.get(API.countries.size()-1).area);
+			
+			String demonymsKey = null;
+			String f = null;
+			String m = null;
+			if (API.countries.get(API.countries.size()-1).demonyms != null && !API.countries.get(API.countries.size()-1).demonyms.isEmpty()) {
+				for (Entry<String, Demonyms> entry : API.countries.get(API.countries.size()-1).demonyms.entrySet()) {
+					demonymsKey = entry.getKey();
+					Demonyms value = entry.getValue();
+					f = value.f;
+					m = value.m;
+					DemonymsStatement.setString(1, API.countries.get(API.countries.size()-1).name.common);
+					DemonymsStatement.setString(2, demonymsKey);
+					DemonymsStatement.setString(3, f);
+					DemonymsStatement.setString(4, m);
+					DemonymsStatement.executeUpdate();
+				}
+				
+			}
+			
+			statement.setString(21, API.countries.get(API.countries.size()-1).flag);
+
+			String mapsCombined = "";
+			mapsCombined = mapsCombined  + "(" + API.countries.get(API.countries.size()-1).maps.googleMaps + ") " + "/ ";
+			mapsCombined = mapsCombined  + "(" + API.countries.get(API.countries.size()-1).maps.openStreetMaps + ") " + "/ ";
+			statement.setString(22, mapsCombined);
+			
+			statement.setLong(23, API.countries.get(API.countries.size()-1).population);
+
+			statement.setString(24, API.countries.get(API.countries.size()-1).fifa);
+
+			String carSignsCombined = "";
+			for(int i =0; i<API.countries.get(API.countries.size()-1).car.signs.length; i++) {
+				carSignsCombined = carSignsCombined  + "(" + API.countries.get(API.countries.size()-1).car.signs[i] + ") " + "/ ";
+			}
+			statement.setString(25, carSignsCombined);
+			statement.setString(26, API.countries.get(API.countries.size()-1).car.side);
+			
+			String timeCombined = "";
+			for(int i =0; i<API.countries.get(API.countries.size()-1).timezones.length; i++) {
+				timeCombined = timeCombined  + "(" + API.countries.get(API.countries.size()-1).timezones[i] + ") " + "/ ";
+			}
+			statement.setString(27, timeCombined);
+
+			String continentsCombined = "";
+			for(int i =0; i<API.countries.get(API.countries.size()-1).continents.length; i++) {
+				continentsCombined = continentsCombined  + "(" + API.countries.get(API.countries.size()-1).continents[i] + ") " + "/ ";
+			}
+			statement.setString(28, continentsCombined);
+			
+			FlagStatement.setString(1, API.countries.get(API.countries.size()-1).name.common);
+			FlagStatement.setString(2, API.countries.get(API.countries.size()-1).flags.png);
+			FlagStatement.setString(3, API.countries.get(API.countries.size()-1).flags.svg);
+			FlagStatement.setString(4, API.countries.get(API.countries.size()-1).flags.alt);
+			FlagStatement.executeUpdate();
 
 			
 			statement.executeUpdate();
@@ -265,6 +380,7 @@ public class JDBC {
 			statement.close();
 			currenciesStatement.close();
 			langStatement.close();
+			FlagStatement.close();
 
 			con.close();
 		} catch (Exception ex) {

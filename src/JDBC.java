@@ -4,9 +4,12 @@ import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.HashSet;
 import java.util.Map.Entry;
 
 public class JDBC {
+	
+	static HashSet<String> table = new HashSet<String>();
 
 	public static void backup() {
 
@@ -131,6 +134,8 @@ public class JDBC {
 					+ "INSERT INTO Countries (name_common, name_official, tld, cca2, ccn3, cca3, cioc, independent, status, un_member, idd_root, idd_suffixes, capital, alt_spellings, region, subregion, latlng, "
 					+ "landlocked, borders, area, flag, maps, population, fifa, car_Signs, car_Side, timezones, continents)\r\n"
 					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);\r\n";
+			
+					table.add("Countries");
 					
 					String insertLangSql =  "IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Languages')\r\n"
 					+ "BEGIN\r\n"
@@ -142,6 +147,9 @@ public class JDBC {
 					+ "END;\r\n"
 					+ "INSERT INTO Languages (country_Name, Language_Key, Language_Value)\r\n"
 	        		+ "VALUES (?, ?, ?);\r\n";
+					
+					table.add("Languages");
+
 					
 					String insertCurrSql = "IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Currencies')\r\n"
 					+ "BEGIN\r\n"
@@ -155,6 +163,9 @@ public class JDBC {
 					+ "INSERT INTO Currencies (country_Name, Currencies_Key, Name, Symbol)\r\n"
 	        		+ "VALUES (?, ?, ?, ?);\r\n";
 					
+					table.add("Currencies");
+
+					
 					String insertTranSql = "IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Translations')\r\n"
 					+ "BEGIN\r\n"
 					+ "    CREATE TABLE Translations (\r\n"
@@ -166,6 +177,8 @@ public class JDBC {
 					+ "END;"
 					+ "INSERT INTO Translations (country_Name, Translations_Key, Official, Common)\r\n"
 	        		+ "VALUES (?, ?, ?, ?);\r\n";
+					
+					table.add("Translations");
 					
 					String insertDemonymsSql = "IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Demonyms')\r\n"
 					+ "BEGIN\r\n"
@@ -179,6 +192,8 @@ public class JDBC {
 					+ "INSERT INTO Demonyms (country_Name, Demonyms_Key, f, m)\r\n"
 	        		+ "VALUES (?, ?, ?, ?);\r\n";
 					
+					table.add("Demonyms");
+					
 					String insertFlafSql = "IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Flag')\r\n"
 					+ "BEGIN\r\n"
 					+ "    CREATE TABLE Flag (\r\n"
@@ -190,9 +205,8 @@ public class JDBC {
 					+ "END;"
 					+ "INSERT INTO Flag (country_Name, png, svg, alt)\r\n"
 	        		+ "VALUES (?, ?, ?, ?);\r\n";
-
-
-			
+					
+					table.add("Flag");
 
 
 			PreparedStatement statement = con.prepareStatement(sql);
@@ -388,4 +402,84 @@ public class JDBC {
 		}
 	}
 
+	public static void printTables() {
+		try {
+			String url = "jdbc:sqlserver://localhost:1433;" + "databaseName=" + Main.databaseName + ";"
+					+ "encrypt=true;" + "trustServerCertificate=true";
+			String username = Main.databaseUsername;
+			String password = Main.databasePass;
+			Connection conn = DriverManager.getConnection(url, username, password);
+
+			DatabaseMetaData metadata = conn.getMetaData();
+			String[] types = { "TABLE" };
+			ResultSet resultSet = metadata.getTables(null, null, "%", types);
+
+			while (resultSet.next()) {
+				String tableName = resultSet.getString("TABLE_NAME");
+				if (!tableName.equalsIgnoreCase("trace_xe_action_map")
+						&& !tableName.equalsIgnoreCase("trace_xe_event_map")) {
+					System.out.println("Table Name:  " + tableName);
+					table.add(tableName);
+				}
+			}
+
+			// Close the connection
+			conn.close();
+		} catch (Exception ex) {
+		}
+	}
+	
+	public static void deleteTable() {
+
+		String url = "jdbc:sqlserver://localhost:1433;" + "databaseName=" + Main.databaseName + ";" + "encrypt=true;"
+				+ "trustServerCertificate=true";
+
+		String user = /* "sa" */ Main.databaseUsername;
+		String pass = /* "root" */ Main.databasePass;
+
+		Connection con = null;
+		try {
+
+			Driver driver = (Driver) Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver").newInstance();
+			DriverManager.registerDriver(driver);
+
+			con = DriverManager.getConnection(url, user, pass);
+
+			String sql = "IF EXISTS (SELECT * FROM sys.tables WHERE name = '" + Main.tableName1 
+			+ "')\r\n" 
+			+ "BEGIN\r\n"
+			+ "Drop table " + Main.tableName1 + "\r\n" 
+			+ "END\r\n";
+			
+			if(Main.tableName1.equals("Countries")) {
+				table.remove(0);
+			}
+			else if(Main.tableName1.equals("Languages")) {
+				table.remove(1);
+			}
+			else if(Main.tableName1.equals("Currencies")) {
+				table.remove(2);
+			}
+			else if(Main.tableName1.equals("Translations")) {
+				table.remove(3);
+			}
+			else if(Main.tableName1.equals("Demonyms")) {
+				table.remove(4);
+			}
+			else if(Main.tableName1.equals("Flag")) {
+				table.remove(5);
+			}
+
+			PreparedStatement statement = con.prepareStatement(sql);
+
+			statement.executeUpdate();
+			statement.close();
+			con.close();
+			
+			System.out.println("Deleted Successfully :)");
+
+		} catch (Exception ex) {
+			System.err.println(ex);
+		}
+	}
 }
